@@ -1,0 +1,18 @@
+FORM ubuntu
+RUN apt -y update && DEBIAN_FRONTEND=noninteractive apt-get install -y -- no-install-recommends tzdata && apt-get insatll -y apache2 && apt-get clean && rm -rf /var/lib/apt/lists/*
+ENV APACHE_RUN_USER www-data
+ENV APACHE_RUN_GROUP www-data
+ENV APACHE_LOG_DIR /var/log/apache2
+ENV APACHE_RUN_DIR /var/log/apache2
+EXPOSE 80
+CMD ["/usr/sbin/apache2","-D","FOREGROUND"]
+
+# COMMANDS
+# $ docker build -t myapache:apr09 -f Dockerfile.apache
+
+# $ docker login <registry>
+# $ docker tag <image>:<tag> <registry>/<repo>/<image>:<tag>
+# $ docker push <registry>/<repo> <image>:<tag> 
+
+# $docker tag myapache:apr09 devavi/myapache:apr09
+# $ docker push devavi/myapache:apr09
