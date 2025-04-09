@@ -1,27 +1,21 @@
-# Special file which we give the instructions on how to create a docker image
-# Automates the image creation on the background
-# Uses existing layer from cache (/var/lib/docer)
-
-# INSTRUCTION      COMMANDS
-#==============================
-FROM                  <BaseImage>
-RUN                   <COMMAND>
-CMD                   ["EXECUTABLE","ARG1","ARG2"]  #user cmd will override the default cmd
-ENTRYPOINT            ["EXECUATABLE","ARG1","ARG2"] #alwaysruns default cmd, user cmd is taken as argument
-COPY                  <SRC><DEST>   # copies a single file
-ADD                   <SRC><DEST> #extarct a archive or download a file from a URL 
-USER                  <USERNAME> # sets the default user
-WORKDIR               <PATH> #sets the default working directory
-ENV                   <VARNAME>=<VALUE>  # variable visible in the image
-ARG                    <VARNAME>=<VALUE> # variabel only visible in temp conatainer, not on the image
-EXPOSE                 <PORT> # exposes the port numbers 
-VOLUME                 ["PATH"] #path for the volume mounting.
+FROM ubuntu
+RUN apt update 
+RUN apt install -y openjdk-11-jdk
+RUN touch /tmp/test 
+CMD ["/bin/sh"]
+COPY startup.sh /tmp/startup.sh
+ENTRYPOINT ["/tmp/startup.sh"]
+ADD test.tar /tmp
+USER nobody
+WORKDIR /tmp
+ENV JAVA_HOME=/opt/jdk1.8
+ARG MYNAME=AVINASH
+EXPOSE 8080
+EXPOSE 7000
 
 
-
-# imagename = Reponame;Tagname #default tag is latest
-# iamge = <registry>/<imageName>:<TagNeme>
-
-#COMMANDS TO BUILD DOCKER IMAGE
-# $docker build -t <imageName>:<TagName>. -f <Dockerfile-location> --build-arg <VARNAME>=<value>
-# $docker build -t myimg:b1
+# Commands
+# $ docker build -t myimg:arg -- build-arg imgTag=22.10
+# $ docker login <registry>
+# $ docker tag<image>:<tag><registry>/<repo>/<image>:<tag>
+# $ dokcer push <registry>/<repo>/<image>:<tag>
